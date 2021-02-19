@@ -52,7 +52,7 @@ example()
 
 table = pandas.read_csv(r'Signature Database dataset.csv', 
             index_col='Time', 
-            parse_dates=['Unix'], 
+            parse_dates=['Time'], 
             header=0, 
             names=['Time', 'Unix', 'Aggregate', 'Fridge Freezer', \
                   'Tumble dryer', 'Washing Machine', 'Dishwasher', \

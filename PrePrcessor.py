@@ -49,3 +49,13 @@ def example():
     plt.show()
 
 example()
+
+table = pandas.read_csv(r'filename', 
+            index_col='Time', 
+            parse_dates=['Unix'], 
+            header=0, 
+            names=['Time', 'Unix', 'Aggregate', 'Fridge Freezer', \
+                  'Tumble dryer', 'Washing Machine', 'Dishwasher', \
+                      'Computer', 'Television', 'Microwave', 'Kettle', \
+                          'Toaster', 'Issues'])
+print(table)

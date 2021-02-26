@@ -50,12 +50,30 @@ def example():
 
 example()
 
-table = pandas.read_csv(r'Signature Database dataset.csv', 
-            index_col='Time', 
-            parse_dates=['Time'], 
-            header=0, 
-            names=['Time', 'Unix', 'Aggregate', 'Fridge Freezer', \
-                  'Tumble dryer', 'Washing Machine', 'Dishwasher', \
-                      'Computer', 'Television', 'Microwave', 'Kettle', \
-                          'Toaster', 'Issues'])
-print(table)
+dataframe =pd.read_csv(#r'/Users/kieran/Desktop/Signature Database dataset.csv')
+dataframe.head(11)
+dataframe.describe()
+dataframe['Date']=pd.to_datetime(dataframe['Time']).dt.date
+dataframe['Time']=pd.to_datetime(dataframe['Time']).dt.time
+dataframenew=dataframe
+dataframenew.head(11)
+
+dataframenew[dataframenew['Fridge'] ==dataframe['Fridge'].max()]
+dataframenew[dataframenew['Freezer'] ==dataframe['Freezer'].max()]
+dataframenew[dataframenew['Dryer'] ==dataframe['Dryer'].max()]
+dataframenew[dataframenew['Washing Machine'] ==dataframe['Washing Machine'].max()] 
+dataframenew[dataframenew['Toaster'] ==dataframe['Toaster'].max()]
+dataframenew[dataframenew['Computer'] ==dataframe['Computer'].max()]
+dataframenew[dataframenew['Television'] ==dataframe['Television'].max()]
+dataframenew[dataframenew['Microwave'] ==dataframe['Microwave'].max()]
+dataframenew[dataframenew['Kettle'] ==dataframe['Kettle'].max()]
+
+dataframenew[dataframenew['Fridge'] ==dataframe['Fridge'].min()]
+dataframenew[dataframenew['Freezer'] ==dataframe['Freezer'].min()]
+dataframenew[dataframenew['Dryer'] ==dataframe['Dryer'].min()]
+dataframenew[dataframenew['Washing Machine'] ==dataframe['Washing Machine'].min()] 
+dataframenew[dataframenew['Toaster'] ==dataframe['Toaster'].min()]
+dataframenew[dataframenew['Computer'] ==dataframe['Computer'].min()]
+dataframenew[dataframenew['Television'] ==dataframe['Television'].min()]
+dataframenew[dataframenew['Microwave'] ==dataframe['Microwave'].min()]
+dataframenew[dataframenew['Kettle'] ==dataframe['Kettle'].min()]

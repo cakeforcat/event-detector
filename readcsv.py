@@ -24,13 +24,13 @@ class DataReader:
             return pd.read_csv(self.file_name, usecols=data_series, index_col="Time",
                                parse_dates=True, nrows=number_of_rows, skiprows=skipped_range)
 
-    def read_in_chunks(self, data_series, data_range=None, chunk_size=1000):
+    def read_in_chunks_to_series(self, data_series, data_range=None, chunk_size=1000):
         data_series.append("Time")
         if data_range is None:
-            return pd.read_csv(self.file_name, usecols=data_series,
-                               parse_dates=["Time"], chunksize=chunk_size)
+            return pd.read_csv(self.file_name, usecols=data_series, index_col="Time",
+                               parse_dates=True, chunksize=chunk_size, squeeze=True)
         else:
             number_of_rows = data_range[1] - data_range[0]
             skipped_range = range(1, data_range[0] - 1)
-            return pd.read_csv(self.file_name, usecols=data_series, parse_dates=["Time"], nrows=number_of_rows,
-                               skiprows=skipped_range, chunksize=chunk_size)
+            return pd.read_csv(self.file_name, usecols=data_series, index_col='Time', parse_dates=True,
+                               nrows=number_of_rows, skiprows=skipped_range, chunksize=chunk_size, squeeze=True)

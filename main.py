@@ -42,9 +42,7 @@ with file.read_in_chunks_to_series([data_series], data_range=[5320, 5395], chunk
 
     # part of event detection
     if optional_event_cache.is_only_start():
-        p = Point(continuity_cache)
-        d = continuity_cache.reset_index().iloc[0, 0]
-        optional_event_cache.add_end(p.get_index())
+        optional_event_cache.add_end(Point(continuity_cache).get_index())
         events_list.append(optional_event_cache.to_dataframe())
 
 s = pd.concat(chunk_list)   # s is the loaded data as 1 pandas Series

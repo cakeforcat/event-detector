@@ -71,11 +71,11 @@ class Point:
 
 
 class EventDetector:
-    def __init__(self, data):
+    def __init__(self, data, threshold):
         self.last_point = None
         self.series = data
         self.event_list = []
-        self.threshold = 60
+        self.threshold = threshold
         self.final_event = Event()
 
     def detect_events(self, point_cache, event_cache=Event()):

@@ -32,26 +32,52 @@ class Visualizer:
         self.events = events
         self.ax = None
 
-    def make_plot(self):
-        if self.events is None:
-            return
+    def make_plot(self, force=False):
+        if self.events is not None or force is True:
+            self.ax = self.series.plot(drawstyle="steps-post",
+                                       xlabel='Time',
+                                       ylabel='Power',
+                                       rot=20)
+        if self.events is not None:
+            if self.events.head(1).iloc[0, 0] < self.series.head(1).reset_index().iloc[0, 0]:
+                self.events.drop([0]).reset_index().plot(x="Start",
+                                                         y="index",
+                                                         kind='scatter',
+                                                         ax=self.ax,
+                                                         marker=5,
+                                                         c='green',
+                                                         s=200)
+            else:
+                self.events.reset_index().plot(x="Start",
+                                               y="index",
+                                               kind='scatter',
+                                               ax=self.ax,
+                                               marker=5,
+                                               c='green',
+                                               s=200)
+            self.events.reset_index().plot(x="End",
+                                           y="index",
+                                           kind='scatter',
+                                           ax=self.ax,
+                                           marker=4,
+                                           c='orange',
+                                           s=200)
+
+            pd.plotting.table(self.ax,
+                              self.events.reset_index(drop=True).round({'Energy (kWh)': 3}),
+                              loc='top',
+                              cellLoc='center')
         else:
-            self.ax = self.series.plot()
-            self.events.reset_index().rename(columns={"index": "value"}).plot(x="Start", y="value", kind='scatter',
-                                                                              ax=self.ax, marker=5, c='green', s=200)
-            self.events.reset_index().rename(columns={"index": "value"}).plot(x="End", y="value", kind='scatter',
-                                                                              ax=self.ax, marker=4, c='orange', s=200,
-                                                                              xlabel='Time', ylabel='Power', rot=20)
-            pd.plotting.table(self.ax, self.events.round({'Energy (kWh)': 3}), loc='top', cellLoc='center')
+            return
 
     def save_plot(self, file_name):
-        if self.events is None:
-            return
-        else:
+        if self.ax is not None:
             plt.savefig(file_name)
+        else:
+            return
 
     def show_plot(self):
-        if self.events is None:
-            return
-        else:
+        if self.ax is not None:
             plt.show()
+        else:
+            return

@@ -10,6 +10,7 @@ class Event:
     def __init__(self):
         self.start = None
         self.end = None
+        self.point_energy_list = []
 
     def add_start(self, start):
         self.start = start
@@ -17,12 +18,22 @@ class Event:
     def add_end(self, end):
         self.end = end
 
+    def add_energy(self, point_value, time_step):
+        self.point_energy_list.append(point_value*time_step)
+
+    def event_invalid(self):
+        self.point_energy_list = []
+
     def clear(self):
         self.start = None
         self.end = None
+        self.point_energy_list = []
 
-    def to_dataframe(self):
-        return pd.DataFrame(data={'Start': [self.start], 'End': [self.end]})
+    def calc_to_dataframe(self):
+        energy = sum(self.point_energy_list) / 3600
+        duration = (self.end - self.start)
+        return pd.DataFrame(data={'Start': [self.start], 'End': [self.end], 'Duration': [duration],
+                                  'Energy (kWh)': [energy]})
 
     def is_empty(self):
         return self.start is None and self.end is None
@@ -64,7 +75,7 @@ class EventDetector:
         self.last_point = None
         self.series = data
         self.event_list = []
-        self.threshold = 10
+        self.threshold = 60
         self.final_event = Event()
 
     def detect_events(self, point_cache, event_cache=Event()):
@@ -72,17 +83,22 @@ class EventDetector:
         self.last_point = Point(point_cache)
         for index, value in self.series.items():
             point = Point([value, index])
-            if point.is_start(self.last_point.value, self.threshold):
+            if event.is_only_start():
+                time_step = (point.get_index() - self.last_point.get_index())
+                event.add_energy(self.last_point.get_value(), time_step.seconds)
+
+            if point.is_start(self.last_point.get_value(), self.threshold):
                 if event.is_empty():
                     event.add_start(point.get_index())
                 elif event.is_only_start():
-                    self.event_list.append(event.to_dataframe())
+                    event.event_invalid()
+                    self.event_list.append(event.calc_to_dataframe())
                     event.add_start(point.get_index())
 
-            if point.is_end(self.last_point.value, self.threshold):
+            if point.is_end(self.last_point.get_value(), self.threshold):
                 if event.is_only_start() or event.is_empty():
                     event.add_end(point.get_index())
-                    self.event_list.append(event.to_dataframe())
+                    self.event_list.append(event.calc_to_dataframe())
                     event.clear()
 
             self.last_point = point
@@ -94,7 +110,7 @@ class EventDetector:
         if not self.event_list:
             return None
         else:
-            return pd.concat(self.event_list)
+            return pd.concat(self.event_list, ignore_index=True)
 
     def is_final_event_ongoing(self):
         return self.final_event.is_only_start()

@@ -35,33 +35,33 @@ class Visualizer:
     def make_plot(self, force=False):
         if self.events is not None or force is True:
             self.ax = self.series.plot(drawstyle="steps-post",
-                                       xlabel='Time',
-                                       ylabel='Power',
-                                       rot=20)
+                                          xlabel='Time',
+                                          ylabel='Power',
+                                          rot=20)
         if self.events is not None:
             if self.events.head(1).iloc[0, 0] < self.series.head(1).reset_index().iloc[0, 0]:
                 self.events.drop([0]).reset_index().plot(x="Start",
-                                                         y="index",
-                                                         kind='scatter',
-                                                         ax=self.ax,
-                                                         marker=5,
-                                                         c='green',
-                                                         s=200)
+                                                            y="index",
+                                                            kind='scatter',
+                                                            ax=self.ax,
+                                                            marker=5,
+                                                            c='green',
+                                                            s=200)
             else:
                 self.events.reset_index().plot(x="Start",
-                                               y="index",
-                                               kind='scatter',
-                                               ax=self.ax,
-                                               marker=5,
-                                               c='green',
-                                               s=200)
+                                                  y="index",
+                                                  kind='scatter',
+                                                  ax=self.ax,
+                                                  marker=5,
+                                                  c='green',
+                                                  s=200)
             self.events.reset_index().plot(x="End",
-                                           y="index",
-                                           kind='scatter',
-                                           ax=self.ax,
-                                           marker=4,
-                                           c='orange',
-                                           s=200)
+                                              y="index",
+                                              kind='scatter',
+                                              ax=self.ax,
+                                              marker=4,
+                                              c='orange',
+                                              s=200)
 
             pd.plotting.table(self.ax,
                               self.events.reset_index(drop=True).round({'Energy (kWh)': 3}),

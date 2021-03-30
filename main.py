@@ -5,12 +5,8 @@ from EventDetector import EventDetector, Event, Point
 from OutputManager import FileManager, Visualizer
 
 
-"""
-main file of the project, this is the starting point where all other components are executed.
-"""
-
 # initialize - prompt the user for input, for now it's faster to hard code it for testing, later it'll be just input()
-# may add more input like chunk size, data range etc. for now it's coded below
+# may add more input like data range etc. for now it's coded below
 #
 #
 #
@@ -50,14 +46,16 @@ with DataReader(file_name).read_in_chunks_to_series([data_series],
             optional_event_cache = detector.final_event
 
         # chunk_list.append(chunk)
-        # visualize, prints the chunk count and outputs a plot figure if the chunk contains events
+        # visualize, prints the chunk count and outputs a plotter figure if the chunk contains events
         chunk_count += 1
         print("chunks: ", chunk_count)
-        plot = Visualizer(chunk, detector.get_events())
-        plot.make_plot()
+        plotter = Visualizer(chunk, detector.get_events())
+        plotter.make_plot()
+        # fix for events spanning multiple chunks
         if detector.is_final_event_ongoing() and detector.get_events() is None:
-            plot.make_plot(force=True)
-        plot.save_plot(r'{0}\{1}'.format(output.get_path(), "chunk {0}.png".format(chunk_count)))
+            plotter.make_plot(force=True)
+
+        plotter.save_plot(r'{0}\{1}'.format(output.get_path(), "chunk {0}.png".format(chunk_count)))
         plt.clf()
 
         continuity_cache = chunk.tail(1)    # don't touch this one
@@ -72,6 +70,5 @@ events = pd.concat(events_list, ignore_index=True)
 # events is a pandas DataFrame with all events, each row is an event, with the first column holding a start timestamp
 # and the second column holding the end timestamp, see print(events)
 
-# print(s)
 print(events)
 output.save_csv(events)  # saves the events in a neat .csv

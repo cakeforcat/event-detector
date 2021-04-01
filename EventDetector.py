@@ -110,7 +110,7 @@ class EventDetector:
         if not self.event_list:
             return None
         else:
-            return pd.concat(self.event_list, ignore_index=True)
+            return pd.concat(self.event_list)
 
     def is_final_event_ongoing(self):
         return self.final_event.is_only_start()

@@ -1,10 +1,5 @@
 import pandas as pd
 
-"""
-Don't even think about touching this, how it works is beyond even my understanding now. Leave it be and use it as shown 
-in main.py
-"""
-
 
 class Event:
     def __init__(self):
